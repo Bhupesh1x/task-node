@@ -1,19 +1,24 @@
-import { z } from "zod";
+import { db } from "@/lib/db";
+import { inngest } from "@/inngest/client";
 
-import { baseProcedure, createTRPCRouter } from "../init";
+import { createTRPCRouter, protectedProcedure } from "../init";
 
 export const appRouter = createTRPCRouter({
-  hello: baseProcedure
-    .input(
-      z.object({
-        text: z.string(),
-      })
-    )
-    .query((opts) => {
-      return {
-        greeting: `hello ${opts.input.text}`,
-      };
-    }),
+  create: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: "test/hello.world",
+      data: {
+        email: "test@example.com",
+      },
+    });
+
+    return { success: true, message: "Job queued" };
+  }),
+  getMany: protectedProcedure.query(async () => {
+    const workflows = await db.workflow.findMany({});
+
+    return workflows;
+  }),
 });
 
 // export type definition of API
