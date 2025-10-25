@@ -1,6 +1,9 @@
+import { requireNonAuth } from "@/lib/auth-utils";
 import { SignUpForm } from "@/features/auth/components/SignUpForm";
 
-function SignUpPage() {
+async function SignUpPage() {
+  await requireNonAuth();
+
   return <SignUpForm />;
 }
 

@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { requireAuth } from "@/lib/auth-utils";
+
 import { Client } from "./client";
 
-function Home() {
+async function Home() {
+  await requireAuth();
+
   return (
     <div className="p-2">
-      <h1 className="text-red-500">Home Page</h1>
-      <Button>Click me!</Button>
       <Client />
     </div>
   );
