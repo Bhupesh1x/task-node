@@ -4,6 +4,7 @@ import {
   KeyIcon,
   StarIcon,
   LogOutIcon,
+  Loader2Icon,
   HistoryIcon,
   CreditCardIcon,
   FolderOpenIcon,
@@ -14,6 +15,8 @@ import { useState } from "react";
 import { redirect, usePathname } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
+
+import { useHasActiveSubscription } from "@/features/subscriptions/hooks/useSubscriptions";
 
 import {
   Sidebar,
@@ -54,15 +57,38 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState<
+    "billing" | "upgrade" | "signout" | null
+  >(null);
+
+  const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   function onSignout() {
-    setIsLoading(true);
+    setLoading("signout");
     authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          setIsLoading(false);
           redirect("/sign-in");
+        },
+      },
+    });
+  }
+
+  async function onUpgradeToPro() {
+    setLoading("upgrade");
+    await authClient.checkout({
+      slug: "pro",
+    });
+
+    setLoading(null);
+  }
+
+  async function onBilling() {
+    setLoading("billing");
+    await authClient.customer.portal({
+      fetchOptions: {
+        onSuccess: () => {
+          setLoading(null);
         },
       },
     });
@@ -125,31 +151,53 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem className="space-y-2">
-            <SidebarMenuButton
-              className="h-10 px-4 gap-x-4"
-              tooltip="Upgrade to pro"
-              onClick={() => {}}
-            >
-              <StarIcon className="size-4" />
-              <span className="font-semibold text-sm">Upgrade to pro</span>
-            </SidebarMenuButton>
+            {!hasActiveSubscription && !isLoading ? (
+              <SidebarMenuButton
+                className="h-10 px-4 gap-x-4"
+                tooltip="Upgrade to Pro"
+                onClick={onUpgradeToPro}
+                disabled={loading !== null}
+              >
+                {loading === "upgrade" ? (
+                  <Loader2Icon className="animate-spin size-4" />
+                ) : (
+                  <StarIcon className="size-4" />
+                )}
+                <span className="font-semibold text-sm">
+                  {loading === "upgrade"
+                    ? "Upgrade to Pro..."
+                    : "Upgrade to Pro"}
+                </span>
+              </SidebarMenuButton>
+            ) : null}
             <SidebarMenuButton
               className="h-10 px-4 gap-x-4"
               tooltip="Billing Portal"
-              onClick={() => {}}
+              onClick={onBilling}
+              disabled={loading !== null}
             >
-              <CreditCardIcon className="size-4" />
-              <span className="font-semibold text-sm">Billing Portal</span>
+              {loading === "billing" ? (
+                <Loader2Icon className="animate-spin size-4" />
+              ) : (
+                <CreditCardIcon className="size-4" />
+              )}
+              <span className="font-semibold text-sm">
+                {loading === "billing" ? "Billing Portal..." : "Billing Portal"}
+              </span>
             </SidebarMenuButton>
             <SidebarMenuButton
               className="h-10 px-4 gap-x-4"
               tooltip="Sign Out"
               onClick={onSignout}
-              disabled={isLoading}
+              disabled={loading !== null}
             >
-              <LogOutIcon className="size-4" />
+              {loading === "signout" ? (
+                <Loader2Icon className="animate-spin size-4" />
+              ) : (
+                <LogOutIcon className="size-4" />
+              )}
               <span className="font-semibold text-sm">
-                {isLoading ? "Signing Out..." : "Sign Out"}
+                {loading === "signout" ? "Signing Out..." : "Sign Out"}
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
