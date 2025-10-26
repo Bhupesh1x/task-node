@@ -27,4 +27,22 @@ export const workflowsRouters = createTRPCRouter({
         },
       });
     }),
+  updateName: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Workflow id is required"),
+        name: z.string().trim().min(1, "Name is required"),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return db.workflow.update({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }),
 });
