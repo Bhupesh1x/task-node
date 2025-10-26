@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { redirect, usePathname } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
@@ -63,11 +64,14 @@ export function AppSidebar() {
 
   const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
+  const queryClient = useQueryClient();
+
   function onSignout() {
     setLoading("signout");
     authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          queryClient.removeQueries({ queryKey: ["subscription"] });
           redirect("/sign-in");
         },
       },
