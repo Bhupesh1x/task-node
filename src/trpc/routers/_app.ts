@@ -1,33 +1,9 @@
-import { db } from "@/lib/db";
-import { inngest } from "@/inngest/client";
+import { workflowsRouters } from "@/features/workflows/server/routers";
 
-import { createTRPCRouter, protectedProcedure } from "../init";
+import { createTRPCRouter } from "../init";
 
 export const appRouter = createTRPCRouter({
-  create: protectedProcedure.mutation(async () => {
-    await inngest.send({
-      name: "test/hello.world",
-      data: {
-        email: "test@example.com",
-      },
-    });
-
-    return { success: true, message: "Job queued" };
-  }),
-
-  getMany: protectedProcedure.query(async () => {
-    const workflows = await db.workflow.findMany({});
-
-    return workflows;
-  }),
-
-  testAi: protectedProcedure.mutation(async () => {
-    await inngest.send({
-      name: "execute.ai",
-    });
-
-    return { success: true, message: "Job queued" };
-  }),
+  workflows: workflowsRouters,
 });
 
 // export type definition of API

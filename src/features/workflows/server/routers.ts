@@ -1,0 +1,30 @@
+import { z } from "zod";
+import { generateSlug } from "random-word-slugs";
+
+import { db } from "@/lib/db";
+import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+
+export const workflowsRouters = createTRPCRouter({
+  create: protectedProcedure.mutation(({ ctx }) => {
+    return db.workflow.create({
+      data: {
+        name: generateSlug(4),
+        userId: ctx.auth.user.id,
+      },
+    });
+  }),
+  remove: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Workflow id is required"),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return db.workflow.delete({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+      });
+    }),
+});
