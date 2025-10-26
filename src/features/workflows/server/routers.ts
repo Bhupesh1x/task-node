@@ -45,4 +45,25 @@ export const workflowsRouters = createTRPCRouter({
         },
       });
     }),
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Workflow id is required"),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return db.workflow.findUnique({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+      });
+    }),
+  getMany: protectedProcedure.query(({ ctx }) => {
+    return db.workflow.findMany({
+      where: {
+        userId: ctx.auth.user.id,
+      },
+    });
+  }),
 });
