@@ -14,10 +14,19 @@ export const appRouter = createTRPCRouter({
 
     return { success: true, message: "Job queued" };
   }),
+
   getMany: protectedProcedure.query(async () => {
     const workflows = await db.workflow.findMany({});
 
     return workflows;
+  }),
+
+  testAi: protectedProcedure.mutation(async () => {
+    await inngest.send({
+      name: "execute.ai",
+    });
+
+    return { success: true, message: "Job queued" };
   }),
 });
 
