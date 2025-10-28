@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
+import { Loader2Icon, PlusIcon } from "lucide-react";
 
 import { Button } from "./ui/button";
 
@@ -41,7 +41,11 @@ export function EntityHeader({
           variant="destructive"
           onClick={onNew}
         >
-          <PlusIcon className="size-4" />
+          {isCreating ? (
+            <Loader2Icon className="animate-spin size-4" />
+          ) : (
+            <PlusIcon className="size-4" />
+          )}
           {newBtnText}
         </Button>
       )}
