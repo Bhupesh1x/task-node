@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { generateSlug } from "random-word-slugs";
 
-import { db } from "@/lib/db";
 import {
   createTRPCRouter,
   premiumProcedure,
   protectedProcedure,
 } from "@/trpc/init";
+import { db } from "@/lib/db";
+import { PAGINATION } from "@/configs/constants";
 
 export const workflowsRouters = createTRPCRouter({
   create: premiumProcedure.mutation(({ ctx }) => {
@@ -63,11 +64,52 @@ export const workflowsRouters = createTRPCRouter({
         },
       });
     }),
-  getMany: protectedProcedure.query(({ ctx }) => {
-    return db.workflow.findMany({
-      where: {
-        userId: ctx.auth.user.id,
-      },
-    });
-  }),
+  getMany: protectedProcedure
+    .input(
+      z.object({
+        page: z.number().default(PAGINATION.defaultPage),
+        pageSize: z
+          .number()
+          .min(PAGINATION.minPageSize)
+          .max(PAGINATION.maxPageSize)
+          .default(PAGINATION.defaultPageSize),
+        search: z.string().default(""),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { page, pageSize, search } = input;
+
+      const [workflows, totalCount] = await Promise.all([
+        db.workflow.findMany({
+          where: {
+            userId: ctx.auth.user.id,
+            name: { contains: search, mode: "insensitive" },
+          },
+          take: pageSize,
+          skip: (page - 1) * pageSize,
+          orderBy: {
+            updatedAt: "desc",
+          },
+        }),
+        db.workflow.count({
+          where: {
+            userId: ctx.auth.user.id,
+            name: { contains: search, mode: "insensitive" },
+          },
+        }),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+      const hasNextPage = page < totalPages;
+      const hasPrevPage = page > 1;
+
+      return {
+        items: workflows,
+        totalPages,
+        hasNextPage,
+        hasPrevPage,
+        page,
+        pageSize,
+      };
+    }),
 });
