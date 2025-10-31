@@ -7,10 +7,13 @@ import { toast } from "sonner";
 
 import { useTRPC } from "@/trpc/client";
 
+import { useWorkflowParams } from "./useWorkflowParams";
+
 export function useSuspenseWorkflows() {
   const trpc = useTRPC();
 
-  return useSuspenseQuery(trpc.workflows.getMany.queryOptions());
+  const [params] = useWorkflowParams();
+  return useSuspenseQuery(trpc.workflows.getMany.queryOptions(params));
 }
 
 export function useCreateWorkflow() {
@@ -21,8 +24,13 @@ export function useCreateWorkflow() {
     trpc.workflows.create.mutationOptions({
       onSuccess: (data) => {
         toast.success(`Workflow "${data?.name}" created`);
+
+        const [params] = useWorkflowParams();
+
         setTimeout(() => {
-          queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions());
+          queryClient.invalidateQueries(
+            trpc.workflows.getMany.queryOptions(params)
+          );
         }, 100);
       },
       onError: (error) => {
