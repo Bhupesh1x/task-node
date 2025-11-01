@@ -1,7 +1,12 @@
 import Link from "next/link";
 
 import { ChangeEvent } from "react";
-import { Loader2Icon, PlusIcon, SearchIcon } from "lucide-react";
+import {
+  PlusIcon,
+  SearchIcon,
+  Loader2Icon,
+  AlertTriangleIcon,
+} from "lucide-react";
 
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -99,6 +104,7 @@ export function EntitySearch({
       <div className="relative">
         <SearchIcon className="absolute size-3.5 left-3 top-1/2 -translate-y-1/2" />
         <Input
+          aria-label={placeholder}
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
@@ -154,6 +160,35 @@ export function EntityPagination({
           Next
         </Button>
       </div>
+    </div>
+  );
+}
+
+interface StateView {
+  message?: string;
+}
+
+export function LoadingView({ message }: StateView) {
+  return (
+    <div className="w-full h-full flex-1 flex items-center justify-center text-center space-y-3 flex-col">
+      <Loader2Icon className="size-6 animate-spin text-primary" />
+
+      <p className="text-sm text-muted-foreground">
+        {message || "Loading items..."}
+      </p>
+    </div>
+  );
+}
+
+export function ErrorView({ message }: StateView) {
+  return (
+    <div className="w-full h-full flex-1 flex items-center justify-center text-center space-y-3 flex-col">
+      <AlertTriangleIcon className="size-6 text-primary" />
+      {!!message && (
+        <p className="text-sm text-muted-foreground">
+          {message || "Error loading items"}
+        </p>
+      )}
     </div>
   );
 }

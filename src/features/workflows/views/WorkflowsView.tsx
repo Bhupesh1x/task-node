@@ -7,8 +7,10 @@ import { useEntitySearch } from "@/hooks/use-entity-search";
 import { useUpgradeModal } from "@/features/subscriptions/hooks/useUpgradeModal";
 
 import {
-  EntityHeader,
+  ErrorView,
+  LoadingView,
   EntitySearch,
+  EntityHeader,
   EntityContainer,
   EntityPagination,
 } from "@/components/EntityComponents";
@@ -84,4 +86,12 @@ export function WorkflowsHeader({ isCreating }: { isCreating?: boolean }) {
       />
     </>
   );
+}
+
+export function WorkflowsLoading() {
+  return <LoadingView message="Loading workflows..." />;
+}
+
+export function WorkflowsError() {
+  return <ErrorView message="Error loading workflows" />;
 }
