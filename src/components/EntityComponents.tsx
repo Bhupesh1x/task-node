@@ -108,3 +108,52 @@ export function EntitySearch({
     </div>
   );
 }
+
+interface EntityPaginationProps {
+  page: number;
+  totalPages?: number;
+  onPageChange: (page: number) => void;
+  disabled?: boolean;
+}
+
+export function EntityPagination({
+  page,
+  totalPages,
+  disabled,
+  onPageChange,
+}: EntityPaginationProps) {
+  function onPrevious() {
+    onPageChange(Math.max(page - 1, 1));
+  }
+
+  function onNext() {
+    onPageChange(Math.min(page + 1, totalPages || 1));
+  }
+
+  return (
+    <div className="flex items-center justify-between w-full">
+      <p className="text-sm text-muted-foreground flex-1">
+        Page {page} of {totalPages || 1}
+      </p>
+
+      <div className="flex items-center gap-x-2">
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={disabled || page === 1}
+          onClick={onPrevious}
+        >
+          Previous
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={disabled || page === totalPages || totalPages === 0}
+          onClick={onNext}
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+}

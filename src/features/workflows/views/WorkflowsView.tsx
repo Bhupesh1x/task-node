@@ -10,6 +10,7 @@ import {
   EntityHeader,
   EntitySearch,
   EntityContainer,
+  EntityPagination,
 } from "@/components/EntityComponents";
 
 import { useWorkflowParams } from "../hooks/useWorkflowParams";
@@ -25,6 +26,15 @@ export function WorkflowsView() {
     setParams,
   });
 
+  function onPageChange(page: number) {
+    if (page < 1 || page > workflows?.data?.totalPages) return;
+
+    setParams({
+      ...params,
+      page,
+    });
+  }
+
   return (
     <EntityContainer>
       <WorkflowsHeader />
@@ -34,6 +44,13 @@ export function WorkflowsView() {
         placeholder="Search workflows"
       />
       <div>{JSON.stringify(workflows, null, 2)}</div>
+
+      <EntityPagination
+        page={workflows?.data?.page}
+        disabled={workflows?.isFetching}
+        totalPages={workflows?.data?.totalPages}
+        onPageChange={onPageChange}
+      />
     </EntityContainer>
   );
 }
