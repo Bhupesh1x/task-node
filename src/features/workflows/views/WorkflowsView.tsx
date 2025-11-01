@@ -2,11 +2,13 @@
 
 import { useRouter } from "next/navigation";
 
+import { PAGINATION } from "@/configs/constants";
 import { useEntitySearch } from "@/hooks/use-entity-search";
 
 import { useUpgradeModal } from "@/features/subscriptions/hooks/useUpgradeModal";
 
 import {
+  EmptyView,
   ErrorView,
   LoadingView,
   EntitySearch,
@@ -35,6 +37,10 @@ export function WorkflowsView() {
       ...params,
       page,
     });
+  }
+
+  if (workflows?.data?.items?.length === 0) {
+    return <WorkflowsEmptyView params={params} setParams={setParams} />;
   }
 
   return (
@@ -94,4 +100,56 @@ export function WorkflowsLoading() {
 
 export function WorkflowsError() {
   return <ErrorView message="Error loading workflows" />;
+}
+
+interface WorkflowsEmptyProps<
+  T extends {
+    search: string;
+    page: number;
+  }
+> {
+  params: T;
+  setParams: (params: T) => void;
+}
+
+export function WorkflowsEmptyView<T extends { search: string; page: number }>({
+  params,
+  setParams,
+}: WorkflowsEmptyProps<T>) {
+  const createWorkflow = useCreateWorkflow();
+
+  const { modal, handleError } = useUpgradeModal();
+
+  function onNew() {
+    createWorkflow.mutate(undefined, {
+      onError: (error) => {
+        handleError(error);
+      },
+    });
+  }
+
+  function clearFilters() {
+    setParams({
+      ...params,
+      page: PAGINATION.defaultPage,
+      search: "",
+    });
+  }
+
+  return (
+    <>
+      {modal}
+      <EmptyView
+        message={
+          params?.search
+            ? "No workflows match your current filters. Clear the filters to view all workflows."
+            : "You've not created any workflows yet. Get started by creating your first workflow"
+        }
+        onBtnClick={params?.search ? clearFilters : onNew}
+        btnText={params?.search ? "Clear filters" : "Add workflow"}
+        isLoading={createWorkflow?.isPending}
+        btnVariant="outline"
+      />
+    </>
+  );
 }

@@ -6,10 +6,12 @@ import {
   SearchIcon,
   Loader2Icon,
   AlertTriangleIcon,
+  PackageOpenIcon,
 } from "lucide-react";
 
 import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
+import { VariantProps } from "class-variance-authority";
 
 type Props = {
   title: string;
@@ -188,6 +190,39 @@ export function ErrorView({ message }: StateView) {
         <p className="text-sm text-muted-foreground">
           {message || "Error loading items"}
         </p>
+      )}
+    </div>
+  );
+}
+
+interface EmptyViewProps extends StateView {
+  btnText?: string;
+  isLoading?: boolean;
+  btnVariant?: VariantProps<typeof buttonVariants>["variant"];
+  onBtnClick?: () => void;
+}
+
+export function EmptyView({
+  message,
+  btnText,
+  isLoading,
+  btnVariant,
+  onBtnClick,
+}: EmptyViewProps) {
+  return (
+    <div className="h-[30rem] bg-background border-dashed flex items-center justify-center space-y-4 rounded-md flex-col text-center">
+      <div className="bg-muted p-4 rounded-full">
+        <PackageOpenIcon className="size-8" />
+      </div>
+
+      <h4 className="text-lg font-semibold">No items</h4>
+
+      {!!message && <p className="text-sm text-muted-foreground">{message}</p>}
+
+      {!!onBtnClick && (
+        <Button size="sm" onClick={onBtnClick} variant={btnVariant}>
+          {isLoading ? <Loader2Icon className="size-4" /> : btnText}
+        </Button>
       )}
     </div>
   );
