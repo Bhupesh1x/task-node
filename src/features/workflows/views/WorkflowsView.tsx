@@ -2,19 +2,38 @@
 
 import { useRouter } from "next/navigation";
 
+import { useEntitySearch } from "@/hooks/use-entity-search";
+
 import { useUpgradeModal } from "@/features/subscriptions/hooks/useUpgradeModal";
 
-import { EntityContainer, EntityHeader } from "@/components/EntityComponents";
+import {
+  EntityHeader,
+  EntitySearch,
+  EntityContainer,
+} from "@/components/EntityComponents";
 
+import { useWorkflowParams } from "../hooks/useWorkflowParams";
 import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/useWorkflows";
 
 export function WorkflowsView() {
   const workflows = useSuspenseWorkflows();
 
+  const [params, setParams] = useWorkflowParams();
+
+  const { searchValue, onSearchChange } = useEntitySearch({
+    params,
+    setParams,
+  });
+
   return (
     <EntityContainer>
       <WorkflowsHeader />
-      <h1>{JSON.stringify(workflows?.data, null, 2)}</h1>
+      <EntitySearch
+        value={searchValue}
+        onChange={onSearchChange}
+        placeholder="Search workflows"
+      />
+      <div>{JSON.stringify(workflows, null, 2)}</div>
     </EntityContainer>
   );
 }
