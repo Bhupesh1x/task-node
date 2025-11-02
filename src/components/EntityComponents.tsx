@@ -1,17 +1,17 @@
 import Link from "next/link";
 
-import { ChangeEvent } from "react";
 import {
   PlusIcon,
   SearchIcon,
   Loader2Icon,
-  AlertTriangleIcon,
   PackageOpenIcon,
+  AlertTriangleIcon,
 } from "lucide-react";
+import { ChangeEvent } from "react";
+import { VariantProps } from "class-variance-authority";
 
 import { Input } from "./ui/input";
 import { Button, buttonVariants } from "./ui/button";
-import { VariantProps } from "class-variance-authority";
 
 type Props = {
   title: string;
@@ -210,7 +210,7 @@ export function EmptyView({
   onBtnClick,
 }: EmptyViewProps) {
   return (
-    <div className="h-[30rem] bg-background border-dashed flex items-center justify-center space-y-4 rounded-md flex-col text-center">
+    <div className="py-7 bg-background border-dashed flex items-center justify-center space-y-4 rounded-md flex-col text-center">
       <div className="bg-muted p-4 rounded-full">
         <PackageOpenIcon className="size-8" />
       </div>
@@ -220,10 +220,56 @@ export function EmptyView({
       {!!message && <p className="text-sm text-muted-foreground">{message}</p>}
 
       {!!onBtnClick && (
-        <Button size="sm" onClick={onBtnClick} variant={btnVariant}>
-          {isLoading ? <Loader2Icon className="size-4" /> : btnText}
+        <Button
+          size="sm"
+          onClick={onBtnClick}
+          variant={btnVariant}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2Icon className="size-4 animate-spin" />{" "}
+              <span>{btnText}</span>
+            </>
+          ) : (
+            btnText
+          )}
         </Button>
       )}
+    </div>
+  );
+}
+
+interface EntityListProps<T> {
+  items: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
+  getKey?: (item: T, index: number) => string | number;
+  emptyView?: React.ReactNode;
+  className?: string;
+}
+
+export function EntityList<T>({
+  items,
+  renderItem,
+  className = "",
+  emptyView,
+  getKey,
+}: EntityListProps<T>) {
+  if (items?.length === 0 && emptyView) {
+    return (
+      <div className="flex-1 items-center justify-center">
+        <div className="max-w-xl mx-auto">{emptyView}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex flex-col gap-y-4 ${className}`}>
+      {items?.map((item, index) => (
+        <div key={getKey ? getKey(item, index) : index}>
+          {renderItem(item, index)}
+        </div>
+      ))}
     </div>
   );
 }

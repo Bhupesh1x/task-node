@@ -10,6 +10,7 @@ import { useUpgradeModal } from "@/features/subscriptions/hooks/useUpgradeModal"
 import {
   EmptyView,
   ErrorView,
+  EntityList,
   LoadingView,
   EntitySearch,
   EntityHeader,
@@ -39,10 +40,6 @@ export function WorkflowsView() {
     });
   }
 
-  if (workflows?.data?.items?.length === 0) {
-    return <WorkflowsEmptyView params={params} setParams={setParams} />;
-  }
-
   return (
     <EntityContainer>
       <WorkflowsHeader />
@@ -51,7 +48,13 @@ export function WorkflowsView() {
         onChange={onSearchChange}
         placeholder="Search workflows"
       />
-      <div>{JSON.stringify(workflows, null, 2)}</div>
+
+      <EntityList
+        getKey={({ id }) => id}
+        items={workflows?.data?.items}
+        renderItem={({ name }) => <p>{name}</p>}
+        emptyView={<WorkflowsEmptyView params={params} setParams={setParams} />}
+      />
 
       <EntityPagination
         page={workflows?.data?.page}
@@ -116,12 +119,16 @@ export function WorkflowsEmptyView<T extends { search: string; page: number }>({
   params,
   setParams,
 }: WorkflowsEmptyProps<T>) {
+  const router = useRouter();
   const createWorkflow = useCreateWorkflow();
 
   const { modal, handleError } = useUpgradeModal();
 
   function onNew() {
     createWorkflow.mutate(undefined, {
+      onSuccess: (data) => {
+        router.push(`/workflows/${data?.id}`);
+      },
       onError: (error) => {
         handleError(error);
       },
@@ -148,7 +155,7 @@ export function WorkflowsEmptyView<T extends { search: string; page: number }>({
         onBtnClick={params?.search ? clearFilters : onNew}
         btnText={params?.search ? "Clear filters" : "Add workflow"}
         isLoading={createWorkflow?.isPending}
-        btnVariant="outline"
+        btnVariant={params?.search ? "outline" : "default"}
       />
     </>
   );
