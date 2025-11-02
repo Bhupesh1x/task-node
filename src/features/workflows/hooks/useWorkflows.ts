@@ -59,3 +59,9 @@ export function useRemoveWorkflow() {
     })
   );
 }
+
+export function useSuspenseWorkflow(id: string) {
+  const trpc = useTRPC();
+
+  return useSuspenseQuery(trpc.workflows.getOne.queryOptions({ id }));
+}
