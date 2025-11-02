@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { formatDistanceToNow } from "date-fns";
 
 import { PAGINATION } from "@/configs/constants";
 import { useEntitySearch } from "@/hooks/use-entity-search";
+import type { Workflow as WorkflowType } from "@/generated/prisma";
 
 import { useUpgradeModal } from "@/features/subscriptions/hooks/useUpgradeModal";
 
@@ -16,10 +18,12 @@ import {
   EntityHeader,
   EntityContainer,
   EntityPagination,
+  EntityItem,
 } from "@/components/EntityComponents";
 
 import { useWorkflowParams } from "../hooks/useWorkflowParams";
 import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/useWorkflows";
+import { WorkflowIcon } from "lucide-react";
 
 export function WorkflowsView() {
   const workflows = useSuspenseWorkflows();
@@ -52,7 +56,7 @@ export function WorkflowsView() {
       <EntityList
         getKey={({ id }) => id}
         items={workflows?.data?.items}
-        renderItem={({ name }) => <p>{name}</p>}
+        renderItem={(workflow) => <WorkflowItem data={workflow} />}
         emptyView={<WorkflowsEmptyView params={params} setParams={setParams} />}
       />
 
@@ -158,5 +162,24 @@ export function WorkflowsEmptyView<T extends { search: string; page: number }>({
         btnVariant={params?.search ? "outline" : "default"}
       />
     </>
+  );
+}
+
+export function WorkflowItem({ data }: { data: WorkflowType }) {
+  return (
+    <EntityItem
+      title={data.name}
+      subtitle={
+        <>
+          Updated {formatDistanceToNow(data?.updatedAt, { addSuffix: true })}{" "}
+          &bull; Created{" "}
+          {formatDistanceToNow(data?.createdAt, { addSuffix: true })}
+        </>
+      }
+      href={`/workflows/${data.id}`}
+      image={<WorkflowIcon className="text-muted-foreground" />}
+      onRemove={() => {}}
+      isRemoving={false}
+    />
   );
 }

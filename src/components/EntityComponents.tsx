@@ -2,15 +2,24 @@ import Link from "next/link";
 
 import {
   PlusIcon,
+  Trash2Icon,
   SearchIcon,
   Loader2Icon,
   PackageOpenIcon,
+  MoreVerticalIcon,
   AlertTriangleIcon,
 } from "lucide-react";
 import { ChangeEvent } from "react";
 import { VariantProps } from "class-variance-authority";
 
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
+import { Card, CardContent } from "./ui/card";
 import { Button, buttonVariants } from "./ui/button";
 
 type Props = {
@@ -271,5 +280,80 @@ export function EntityList<T>({
         </div>
       ))}
     </div>
+  );
+}
+
+interface EntityItemProps {
+  href: string;
+  title: string;
+  subtitle: React.ReactNode;
+  image: React.ReactNode;
+  actions?: React.ReactNode;
+  onRemove?: () => void;
+  isRemoving?: boolean;
+}
+
+export function EntityItem({
+  href,
+  title,
+  image,
+  subtitle,
+  actions,
+  isRemoving,
+  onRemove,
+}: EntityItemProps) {
+  function handleRemove(e: React.MouseEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    onRemove?.();
+  }
+
+  return (
+    <Link href={href} prefetch>
+      <Card>
+        <CardContent className="flex items-center justify-between">
+          <div className="flex items-center gap-x-4">
+            {image}
+
+            <div className="space-y-1">
+              <h4 className="text-base font-medium">{title}</h4>
+              <div className="text-xs text-muted-foreground">{subtitle}</div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-x-2">
+            {actions}
+
+            {!!onRemove && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreVerticalIcon />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    disabled={isRemoving}
+                    onClick={(e) => handleRemove(e)}
+                  >
+                    {isRemoving ? (
+                      <Loader2Icon className="mr-2 animate-spin" />
+                    ) : (
+                      <Trash2Icon className="mr-2 text-destructive" />
+                    )}
+                    <span className="text-destructive">Delete</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
