@@ -65,3 +65,25 @@ export function useSuspenseWorkflow(id: string) {
 
   return useSuspenseQuery(trpc.workflows.getOne.queryOptions({ id }));
 }
+
+export function useUpdateWorkflowName() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.workflows.updateName.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Workflow "${data.name}" updated`);
+        queryClient.invalidateQueries(
+          trpc.workflows.getOne.queryOptions({ id: data.id })
+        );
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
+      },
+      onError: () => {
+        toast.error(
+          `Failed to update the workflow name. Please try again after sometime`
+        );
+      },
+    })
+  );
+}

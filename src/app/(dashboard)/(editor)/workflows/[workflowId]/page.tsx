@@ -11,6 +11,7 @@ import {
   EditorLoading,
 } from "@/features/editor/components/Editor";
 import { prefetchWorkflow } from "@/features/workflows/server/prefetch";
+import { EditorHeader } from "@/features/editor/components/EditorHeader";
 
 interface Props {
   params: Promise<{ workflowId: string }>;
@@ -27,7 +28,10 @@ async function page({ params }: Props) {
     <HydrateClient>
       <ErrorBoundary fallback={<EditorError />}>
         <Suspense fallback={<EditorLoading />}>
-          <Editor workflowId={workflowId} />
+          <EditorHeader workflowId={workflowId} />
+          <main className="flex-1">
+            <Editor workflowId={workflowId} />
+          </main>
         </Suspense>
       </ErrorBoundary>
     </HydrateClient>
