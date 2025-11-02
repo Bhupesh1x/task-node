@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 import {
@@ -310,7 +312,7 @@ export function EntityItem({
   }
 
   return (
-    <Link href={href} prefetch>
+    <Link href={href} prefetch className={`${isRemoving ? "opacity-50" : ""}`}>
       <Card>
         <CardContent className="flex items-center justify-between">
           <div className="flex items-center gap-x-4">

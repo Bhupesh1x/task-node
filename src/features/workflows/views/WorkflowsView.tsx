@@ -22,7 +22,11 @@ import {
 } from "@/components/EntityComponents";
 
 import { useWorkflowParams } from "../hooks/useWorkflowParams";
-import { useCreateWorkflow, useSuspenseWorkflows } from "../hooks/useWorkflows";
+import {
+  useCreateWorkflow,
+  useRemoveWorkflow,
+  useSuspenseWorkflows,
+} from "../hooks/useWorkflows";
 import { WorkflowIcon } from "lucide-react";
 
 export function WorkflowsView() {
@@ -166,6 +170,12 @@ export function WorkflowsEmptyView<T extends { search: string; page: number }>({
 }
 
 export function WorkflowItem({ data }: { data: WorkflowType }) {
+  const removeWorkflow = useRemoveWorkflow();
+
+  function onRemove() {
+    removeWorkflow.mutate({ id: data.id });
+  }
+
   return (
     <EntityItem
       title={data.name}
@@ -178,8 +188,8 @@ export function WorkflowItem({ data }: { data: WorkflowType }) {
       }
       href={`/workflows/${data.id}`}
       image={<WorkflowIcon className="text-muted-foreground" />}
-      onRemove={() => {}}
-      isRemoving={false}
+      onRemove={onRemove}
+      isRemoving={removeWorkflow?.isPending}
     />
   );
 }
