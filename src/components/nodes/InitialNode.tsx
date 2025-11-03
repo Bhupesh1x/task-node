@@ -2,7 +2,7 @@ import { memo } from "react";
 import { PlusIcon } from "lucide-react";
 import type { NodeProps } from "@xyflow/react";
 
-import { PlaceholderNode } from "./placeholder-node";
+import { PlaceholderNode } from "../placeholder-node";
 
 function InitialNodeComponent(props: NodeProps) {
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import { WorkflowIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 
@@ -12,22 +13,21 @@ import { useUpgradeModal } from "@/features/subscriptions/hooks/useUpgradeModal"
 import {
   EmptyView,
   ErrorView,
+  EntityItem,
   EntityList,
   LoadingView,
   EntitySearch,
   EntityHeader,
   EntityContainer,
   EntityPagination,
-  EntityItem,
 } from "@/components/EntityComponents";
 
-import { useWorkflowParams } from "../hooks/useWorkflowParams";
 import {
   useCreateWorkflow,
   useRemoveWorkflow,
   useSuspenseWorkflows,
 } from "../hooks/useWorkflows";
-import { WorkflowIcon } from "lucide-react";
+import { useWorkflowParams } from "../hooks/useWorkflowParams";
 
 export function WorkflowsView() {
   const workflows = useSuspenseWorkflows();
