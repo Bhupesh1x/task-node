@@ -8,6 +8,7 @@ import {
   type Connection,
 } from "@xyflow/react";
 import {
+  Panel,
   addEdge,
   MiniMap,
   Controls,
@@ -23,6 +24,8 @@ import { nodeComponents } from "@/configs/node-components";
 import { useSuspenseWorkflow } from "@/features/workflows/hooks/useWorkflows";
 
 import { ErrorView, LoadingView } from "@/components/EntityComponents";
+
+import { AddNodeButton } from "./AddNodeButton";
 
 import "@xyflow/react/dist/style.css";
 
@@ -71,6 +74,9 @@ export function Editor({ workflowId }: Props) {
         <Background />
         <Controls />
         <MiniMap />
+        <Panel position="top-right">
+          <AddNodeButton />
+        </Panel>
       </ReactFlow>
     </div>
   );
