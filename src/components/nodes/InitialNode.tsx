@@ -6,7 +6,7 @@ import { PlaceholderNode } from "../placeholder-node";
 
 function InitialNodeComponent(props: NodeProps) {
   return (
-    <PlaceholderNode {...props}>
+    <PlaceholderNode {...props} onClick={() => {}}>
       <div className="flex items-center justify-center cursor-pointer">
         <PlusIcon className="size-4" />
       </div>
