@@ -2,13 +2,19 @@ import { NodeTypeOptions } from "@/configs/types";
 
 interface Props {
   node: NodeTypeOptions;
+  onClick: (selectedNode: NodeTypeOptions) => void;
 }
 
-export function NodeSelectorItem({ node }: Props) {
+export function NodeSelectorItem({ node, onClick }: Props) {
+  function handleClick() {
+    onClick?.(node);
+  }
+
   return (
     <div
       className="flex items-center gap-x-4 py-5 px-4 border-l-2 border-transparent hover:border-l-primary cursor-pointer"
       key={node.type}
+      onClick={handleClick}
     >
       {typeof node.icon === "string" ? (
         <img
