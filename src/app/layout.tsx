@@ -1,3 +1,4 @@
+import { Provider } from "jotai";
 import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -34,8 +35,10 @@ export default function RootLayout({
       >
         <TRPCReactProvider>
           <NuqsAdapter>
-            <Toaster />
-            {children}
+            <Provider>
+              <Toaster />
+              {children}
+            </Provider>
           </NuqsAdapter>
         </TRPCReactProvider>
       </body>

@@ -1,11 +1,11 @@
 "use client";
 
-import {
-  type Node,
-  type Edge,
-  type NodeChange,
-  type EdgeChange,
-  type Connection,
+import type {
+  Node,
+  Edge,
+  NodeChange,
+  EdgeChange,
+  Connection,
 } from "@xyflow/react";
 import {
   Panel,
@@ -17,10 +17,12 @@ import {
   applyNodeChanges,
   applyEdgeChanges,
 } from "@xyflow/react";
+import { useSetAtom } from "jotai";
 import { useState, useCallback } from "react";
 
 import { nodeComponents } from "@/configs/node-components";
 
+import { editorAtom } from "@/features/workflows/store/atoms";
 import { useSuspenseWorkflow } from "@/features/workflows/hooks/useWorkflows";
 
 import { ErrorView, LoadingView } from "@/components/EntityComponents";
@@ -35,6 +37,8 @@ interface Props {
 
 export function Editor({ workflowId }: Props) {
   const workflow = useSuspenseWorkflow(workflowId);
+
+  const setEditor = useSetAtom(editorAtom);
 
   const [nodes, setNodes] = useState<Node[]>(workflow.data?.nodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.data?.edges);
@@ -70,6 +74,7 @@ export function Editor({ workflowId }: Props) {
           hideAttribution: true,
         }}
         nodeTypes={nodeComponents}
+        onInit={setEditor}
       >
         <Background />
         <Controls />
