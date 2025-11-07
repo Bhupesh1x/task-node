@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Edge, Node } from "@xyflow/react";
+import type { Edge, Node } from "@xyflow/react";
 import { generateSlug } from "random-word-slugs";
 
 import {
@@ -146,5 +146,74 @@ export const workflowsRouters = createTRPCRouter({
         page,
         pageSize,
       };
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1),
+        nodes: z.array(
+          z.object({
+            id: z.string(),
+            type: z.string().nullish(),
+            position: z.object({ x: z.number(), y: z.number() }),
+            data: z.record(z.string(), z.any()).optional(),
+          })
+        ),
+        connections: z.array(
+          z.object({
+            source: z.string(),
+            target: z.string(),
+            sourceHandle: z.string().nullish(),
+            targetHandle: z.string().nullish(),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, nodes, connections } = input;
+      const workflow = await db.workflow.findUniqueOrThrow({
+        where: { id: id, userId: ctx.auth.user.id },
+      });
+
+      return await db.$transaction(async (tx) => {
+        // 1. Delete all existing nodes and connections for the workflow (Connections will be deleted automatically from cascade)
+
+        await tx.node.deleteMany({
+          where: { workflowId: workflow.id },
+        });
+
+        // 2. Create nodes
+        await tx.node.createMany({
+          data: nodes?.map((node) => ({
+            id: node.id,
+            workflowId: id,
+            name: node.type || "unknown",
+            type: node.type as NodeType,
+            position: node.position,
+            data: node.data || {},
+          })),
+        });
+
+        // 3. Create connections
+        await tx.connection.createMany({
+          data: connections?.map((connection) => ({
+            workflowId: workflow.id,
+            fromNodeId: connection.source,
+            toNodeId: connection.target,
+            fromOutput: connection.sourceHandle || "main",
+            toOutput: connection.targetHandle || "main",
+          })),
+        });
+
+        // 4.Update workflow updatedAt timestamp
+        await tx.workflow.update({
+          where: { id: workflow.id },
+          data: {
+            updatedAt: new Date(),
+          },
+        });
+
+        return workflow;
+      });
     }),
 });
