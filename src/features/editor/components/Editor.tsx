@@ -69,12 +69,17 @@ export function Editor({ workflowId }: Props) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        fitView
         proOptions={{
           hideAttribution: true,
         }}
         nodeTypes={nodeComponents}
         onInit={setEditor}
+        fitView
+        snapGrid={[10, 10]}
+        snapToGrid={true}
+        panOnScroll={true}
+        panOnDrag={false}
+        selectionOnDrag={true}
       >
         <Background />
         <Controls />
