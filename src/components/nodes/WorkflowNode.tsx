@@ -40,7 +40,10 @@ export function WorkflowNode({
         >
           <p className="font-medium">{name}</p>
           {!!description && (
-            <p className="text-muted-foreground text-sm truncate">
+            <p
+              className="text-muted-foreground text-sm truncate"
+              title={description}
+            >
               {description}
             </p>
           )}
