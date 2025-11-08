@@ -2,7 +2,7 @@
 
 import { memo } from "react";
 import Image from "next/image";
-import { Position } from "@xyflow/react";
+import { Position, useReactFlow } from "@xyflow/react";
 import type { LucideIcon } from "lucide-react";
 
 import { BaseHandle } from "@/components/base-handle";
@@ -10,6 +10,7 @@ import { WorkflowNode } from "@/components/nodes/WorkflowNode";
 import { BaseNode, BaseNodeContent } from "@/components/base-node";
 
 interface Props {
+  id: string;
   name: string;
   description?: string;
   icon: LucideIcon | string;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 function BaseExecutionNodeComponent({
+  id,
   name,
   children,
   icon: Icon,
@@ -26,7 +28,24 @@ function BaseExecutionNodeComponent({
   onSettings,
   onDoubleClick,
 }: Props) {
-  function handleDelete() {}
+  const { setNodes, setEdges } = useReactFlow();
+
+  function handleDelete() {
+    setNodes((prevNodes) => {
+      const updatedNodes = prevNodes?.filter((node) => node.id !== id);
+
+      return updatedNodes;
+    });
+
+    setEdges((prevEdges) => {
+      const updatedEdges = prevEdges?.filter(
+        (edge) => edge?.source !== id && edge?.target !== id
+      );
+
+      return updatedEdges;
+    });
+  }
+
   return (
     <WorkflowNode
       name={name}
