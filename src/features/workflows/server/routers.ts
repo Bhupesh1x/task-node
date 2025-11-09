@@ -8,6 +8,7 @@ import {
   protectedProcedure,
 } from "@/trpc/init";
 import { db } from "@/lib/db";
+import { inngest } from "@/inngest/client";
 import { NodeType } from "@/generated/prisma";
 import { PAGINATION } from "@/configs/constants";
 
@@ -215,5 +216,22 @@ export const workflowsRouters = createTRPCRouter({
 
         return workflow;
       });
+    }),
+  executeWorkflow: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Id is required"),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const workflow = await db.workflow.findUniqueOrThrow({
+        where: { id: input.id, userId: ctx.auth.user.id },
+      });
+
+      await inngest.send({
+        name: "workflows/execute.workflow",
+      });
+
+      return workflow;
     }),
 });
