@@ -63,7 +63,7 @@ export function HttpRequestDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[95%] md:max-h-[90%] overflow-y-auto">
+      <DialogContent className="h-full md:h-[98%] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>HTTP Request</DialogTitle>
           <DialogDescription>
