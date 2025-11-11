@@ -48,7 +48,7 @@ export function HttpRequestDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       body: initialData?.body || "",
-      endpoint: initialData?.endpoint,
+      endpoint: initialData?.endpoint || "",
       method: initialData?.method || "GET",
     },
   });
@@ -63,7 +63,7 @@ export function HttpRequestDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="h-full md:h-[98%] overflow-y-auto">
+      <DialogContent className="max-h-full md:max-h-[98%] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>HTTP Request</DialogTitle>
           <DialogDescription>
