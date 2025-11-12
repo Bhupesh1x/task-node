@@ -47,6 +47,7 @@ export function HttpRequestDialog({
   const form = useForm<formType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      variableName: initialData?.variableName || "",
       body: initialData?.body || "",
       endpoint: initialData?.endpoint || "",
       method: initialData?.method || "GET",
@@ -59,6 +60,7 @@ export function HttpRequestDialog({
   }
 
   const watchMethod = form.watch("method");
+  const watchVariableName = form.watch("variableName") || "myApiName";
   const shouldShowBody = ["POST", "PUT", "PATCH"]?.includes(watchMethod);
 
   return (
@@ -76,6 +78,24 @@ export function HttpRequestDialog({
             className="mt-4 space-y-7"
             onSubmit={form.handleSubmit(handleSubmit)}
           >
+            <FormField
+              control={form.control}
+              name="variableName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Variable Name</FormLabel>
+
+                  <FormControl>
+                    <Input {...field} placeholder="myApiName" />
+                  </FormControl>
+                  <FormDescription>
+                    Use this name to reference the result in other nodes:{" "}
+                    {`{{${watchVariableName}.httpResponse.data}}`}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="method"

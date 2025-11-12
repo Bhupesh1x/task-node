@@ -4,6 +4,7 @@ import type { Node } from "@xyflow/react";
 import type { formSchema } from "./schema";
 
 export interface HttpRequestNodeData {
+  variableName?: string;
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;

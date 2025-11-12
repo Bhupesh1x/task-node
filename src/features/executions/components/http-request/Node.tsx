@@ -36,6 +36,7 @@ function HttpRequestNodeComponent(props: NodeProps<HttpRequestNodeType>) {
               endpoint: values.endpoint,
               method: values.method,
               body: values.body,
+              variableName: values.variableName,
             },
           };
         }
