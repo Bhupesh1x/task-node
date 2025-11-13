@@ -1,14 +1,21 @@
+import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
 
 import type { NodeExecutor } from "../../types";
 
 type HttpRequestData = {
-  variableName?: string;
-  endpoint?: string;
-  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  variableName: string;
+  endpoint: string;
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: string;
 };
+
+Handlebars.registerHelper("json", (context) => {
+  const jsonStringfy = JSON.stringify(context, null, 2);
+  const safeString = new Handlebars.SafeString(jsonStringfy);
+  return safeString;
+});
 
 export async function httpRequestExecutor({
   data,
@@ -16,18 +23,31 @@ export async function httpRequestExecutor({
   context,
   step,
 }: Parameters<NodeExecutor<HttpRequestData>>[0]) {
-  if (!data?.endpoint) {
+  if (!data?.endpoint?.trim()?.length) {
     throw new NonRetriableError("HTTP request node: No endpoint configured");
   }
 
+  if (!data?.variableName?.trim()?.length) {
+    throw new NonRetriableError(
+      "HTTP request node: Variable name not configured"
+    );
+  }
+
+  if (!data?.method?.trim()?.length) {
+    throw new NonRetriableError("HTTP request node: Method not configured");
+  }
+
   const result = await step.run("http-request", async () => {
-    const method = data?.method || "GET";
-    const endpoint = data?.endpoint!;
+    const method = data?.method;
+    const endpoint = Handlebars.compile(data?.endpoint)(context);
 
     const options: KyOptions = { method };
 
     if (["POST", "PUT", "PATCH"]?.includes(method)) {
-      options.body = data?.body;
+      const resolved = Handlebars.compile(data.body || "{}")(context);
+      JSON.parse(resolved);
+
+      options.body = resolved;
       options.headers = {
         "Content-Type": "application/json",
       };
@@ -48,17 +68,9 @@ export async function httpRequestExecutor({
       },
     };
 
-    if (data?.variableName) {
-      return {
-        ...context,
-        [data.variableName]: values,
-      };
-    }
-
-    // For edge case where variable name is not present
     return {
       ...context,
-      ...values,
+      [data.variableName]: values,
     };
   });
 
