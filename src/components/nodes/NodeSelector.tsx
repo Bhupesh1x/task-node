@@ -1,11 +1,11 @@
 import { toast } from "sonner";
 import { useCallback } from "react";
 import { createId } from "@paralleldrive/cuid2";
-import { Node, useReactFlow } from "@xyflow/react";
+import { type Node, useReactFlow } from "@xyflow/react";
 import { GlobeIcon, MousePointerIcon } from "lucide-react";
 
 import { NodeType } from "@/generated/prisma";
-import { NodeTypeOptions } from "@/configs/types";
+import type { NodeTypeOptions } from "@/configs/types";
 
 import {
   Sheet,
@@ -26,6 +26,12 @@ const triggerNodes: NodeTypeOptions[] = [
     description:
       "Runs the flow on clicking the button. Good for getting started quickly",
     icon: MousePointerIcon,
+  },
+  {
+    type: NodeType.GOOGLE_FORM_TRIGGER,
+    label: "Google Form",
+    description: "Runs the flow on when a Google Form is submitted",
+    icon: "/googleform.svg",
   },
 ];
 
