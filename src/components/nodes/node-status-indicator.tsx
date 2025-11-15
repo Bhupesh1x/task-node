@@ -42,7 +42,7 @@ export const BorderLoadingIndicator = ({
 }) => {
   return (
     <>
-      <div className="absolute -left-[2px] -top-[2px] h-[calc(100%+4px)] w-[calc(100%+4px)]">
+      <div className="absolute -left-px -top-px h-[calc(100%+2px)] w-[calc(100%+2px)]">
         <style>
           {`
         @keyframes spin {
@@ -85,7 +85,7 @@ const StatusBorder = ({
     <>
       <div
         className={cn(
-          "absolute -left-[2px] -top-[2px] h-[calc(100%+4px)] w-[calc(100%+4px)] rounded-md border-2",
+          "absolute -left-px -top-px h-[calc(100%+2px)] w-[calc(100%+2px)] rounded-md border-2",
           className
         )}
       />

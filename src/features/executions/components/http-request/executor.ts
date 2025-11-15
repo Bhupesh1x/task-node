@@ -2,8 +2,9 @@ import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
 
-import type { NodeExecutor } from "../../types";
 import { httpRequestChannels } from "@/inngest/channels/http-request";
+
+import type { NodeExecutor } from "../../types";
 
 type HttpRequestData = {
   variableName: string;
