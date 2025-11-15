@@ -8,12 +8,13 @@ import { getExecutor } from "@/features/executions/lib/executor-registry";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
 import { httpRequestChannels } from "./channels/http-request";
+import { manualTriggerChannels } from "./channels/manual-trigger";
 
 export const executeWorkflow = inngest.createFunction(
   { id: "execute-workflow", retries: 0 },
   {
     event: "workflows/execute.workflow",
-    channels: [httpRequestChannels()],
+    channels: [httpRequestChannels(), manualTriggerChannels()],
   },
   async ({ event, step, publish }) => {
     const workflowId = event?.data?.workflowId;

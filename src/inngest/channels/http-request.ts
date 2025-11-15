@@ -1,10 +1,7 @@
-import { channel, topic } from "@inngest/realtime";
+import { createStatusChannel } from "./create-status-channel";
 
 export const HTTP_REQUEST_CHANNEL_NAME = "http-request-channel";
 
-export const httpRequestChannels = channel(HTTP_REQUEST_CHANNEL_NAME).addTopic(
-  topic("status").type<{
-    nodeId: string;
-    status: "loading" | "success" | "error";
-  }>()
+export const httpRequestChannels = createStatusChannel(
+  HTTP_REQUEST_CHANNEL_NAME
 );
