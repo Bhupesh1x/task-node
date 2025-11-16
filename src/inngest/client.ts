@@ -4,4 +4,5 @@ import { realtimeMiddleware } from "@inngest/realtime/middleware";
 export const inngest = new Inngest({
   id: "task-node",
   middleware: [realtimeMiddleware()],
+  eventKey: process.env.INNGEST_EVENT_KEY,
 });
