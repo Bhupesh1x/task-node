@@ -8,9 +8,9 @@ import {
   protectedProcedure,
 } from "@/trpc/init";
 import { db } from "@/lib/db";
-import { inngest } from "@/inngest/client";
 import { NodeType } from "@/generated/prisma";
 import { PAGINATION } from "@/configs/constants";
+import { sendWorkflowExecution } from "@/inngest/utils";
 
 export const workflowsRouters = createTRPCRouter({
   create: premiumProcedure.mutation(({ ctx }) => {
@@ -228,9 +228,8 @@ export const workflowsRouters = createTRPCRouter({
         where: { id: input.id, userId: ctx.auth.user.id },
       });
 
-      await inngest.send({
-        name: "workflows/execute.workflow",
-        data: { workflowId: workflow.id },
+      await sendWorkflowExecution({
+        workflowId: workflow.id,
       });
 
       return workflow;
