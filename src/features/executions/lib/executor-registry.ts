@@ -2,6 +2,7 @@ import { NonRetriableError } from "inngest";
 
 import { NodeType } from "@/generated/prisma";
 
+import { stripeTriggerExecutor } from "@/features/triggers/stripe-trigger/executor";
 import { manualTriggerExecutor } from "@/features/triggers/manual-triggers/executor";
 import { httpRequestExecutor } from "@/features/executions/components/http-request/executor";
 import { googleFormTriggerExecutor } from "@/features/triggers/google-form-trigger/executor";
@@ -12,6 +13,7 @@ export const executeRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.INITIAL]: manualTriggerExecutor,
   [NodeType.HTTP_REQUEST]: httpRequestExecutor,
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
+  [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
 };
 
