@@ -9,12 +9,15 @@ import { googleFormTriggerExecutor } from "@/features/triggers/google-form-trigg
 
 import type { NodeExecutor } from "../types";
 
+import { geminiExecutor } from "../components/gemini/executor";
+
 export const executeRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.INITIAL]: manualTriggerExecutor,
   [NodeType.HTTP_REQUEST]: httpRequestExecutor,
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
+  [NodeType.GEMINI]: geminiExecutor,
 };
 
 export function getExecutor(type: NodeType): NodeExecutor {

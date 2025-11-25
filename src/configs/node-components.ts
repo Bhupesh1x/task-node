@@ -2,6 +2,7 @@ import type { NodeTypes } from "@xyflow/react";
 
 import { NodeType } from "@/generated/prisma";
 
+import { GeminiNode } from "@/features/executions/components/gemini/Node";
 import { StripeTriggerNode } from "@/features/triggers/stripe-trigger/Node";
 import { ManualTriggerNode } from "@/features/triggers/manual-triggers/Node";
 import { HttpRequestNode } from "@/features/executions/components/http-request/Node";
@@ -10,6 +11,7 @@ import { GoogleFormTriggerNode } from "@/features/triggers/google-form-trigger/N
 import { InitialNode } from "@/components/nodes/InitialNode";
 
 export const nodeComponents = {
+  [NodeType.GEMINI]: GeminiNode,
   [NodeType.INITIAL]: InitialNode,
   [NodeType.HTTP_REQUEST]: HttpRequestNode,
   [NodeType.STRIPE_TRIGGER]: StripeTriggerNode,
