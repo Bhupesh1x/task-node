@@ -43,4 +43,18 @@ export const credentialsRouters = createTRPCRouter({
         },
       });
     }),
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Credential id is required"),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return db.workflow.findFirstOrThrow({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
+        },
+      });
+    }),
 });
