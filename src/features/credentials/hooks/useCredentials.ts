@@ -1,4 +1,5 @@
 import {
+  useQuery,
   useMutation,
   useQueryClient,
   useSuspenseQuery,
@@ -6,6 +7,8 @@ import {
 import { toast } from "sonner";
 
 import { useTRPC } from "@/trpc/client";
+
+import type { CredentialType } from "@/generated/prisma";
 
 import { useCredentialsParams } from "./useCredentialsParams";
 
@@ -66,4 +69,31 @@ export function useSuspenseCredential(id: string) {
   const trpc = useTRPC();
 
   return useSuspenseQuery(trpc.credentials.getOne.queryOptions({ id }));
+}
+
+export function useUpdateCredential() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    trpc.credentials.update.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(`Credential "${data.name}" saved`);
+        queryClient.invalidateQueries(
+          trpc.credentials.getOne.queryOptions({ id: data.id })
+        );
+      },
+      onError: () => {
+        toast.error(
+          `Failed to save the credential. Please try again after sometime`
+        );
+      },
+    })
+  );
+}
+
+export function useCredentialByType(type: CredentialType) {
+  const trpc = useTRPC();
+
+  return useQuery(trpc.credentials.getByType.queryOptions({ type }));
 }
