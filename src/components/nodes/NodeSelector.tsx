@@ -60,6 +60,12 @@ const executionNodes: NodeTypeOptions[] = [
     description: "Uses Open AI to generate text",
     icon: "/openai.svg",
   },
+  {
+    type: NodeType.ANTHROPIC,
+    label: "Anthropic",
+    description: "Uses Anthropic to generate text",
+    icon: "/anthropic.svg",
+  },
 ];
 
 interface Props {
@@ -120,7 +126,7 @@ export function NodeSelector({ open, children, onOpenChange }: Props) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md">
+      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>
           <SheetTitle>What triggers the workflow?</SheetTitle>
           <SheetDescription>
