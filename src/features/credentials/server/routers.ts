@@ -106,4 +106,25 @@ export const credentialsRouters = createTRPCRouter({
         pageSize,
       };
     }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Credential id is required"),
+        name: z.string().trim().min(1, "Name is required"),
+        type: z.enum(CredentialType),
+        value: z.string().trim().min(1, "Value is required"),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      const { id, name, type, value } = input;
+
+      return db.credential.update({
+        where: { id, userId: ctx.auth.user.id },
+        data: {
+          name,
+          type,
+          value, // TODO: Add encryption
+        },
+      });
+    }),
 });
