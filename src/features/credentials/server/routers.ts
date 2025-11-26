@@ -127,4 +127,21 @@ export const credentialsRouters = createTRPCRouter({
         },
       });
     }),
+  getByType: protectedProcedure
+    .input(
+      z.object({
+        type: z.enum(CredentialType),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return db.credential.findMany({
+        where: {
+          type: input.type,
+          userId: ctx.auth.user.id,
+        },
+        orderBy: {
+          updatedAt: "desc",
+        },
+      });
+    }),
 });
