@@ -1,8 +1,12 @@
 import { z } from "zod";
 
+import {
+  createTRPCRouter,
+  premiumProcedure,
+  protectedProcedure,
+} from "@/trpc/init";
 import { db } from "@/lib/db";
 import { CredentialType } from "@/generated/prisma";
-import { createTRPCRouter, premiumProcedure } from "@/trpc/init";
 
 export const credentialsRouters = createTRPCRouter({
   create: premiumProcedure
@@ -22,6 +26,20 @@ export const credentialsRouters = createTRPCRouter({
           userId: ctx.auth.user.id,
           type,
           value, // TODO: Add encryption
+        },
+      });
+    }),
+  remove: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().trim().min(1, "Credential id is required"),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return db.credential.delete({
+        where: {
+          id: input.id,
+          userId: ctx.auth.user.id,
         },
       });
     }),
