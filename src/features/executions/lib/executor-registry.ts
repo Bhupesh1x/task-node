@@ -11,6 +11,7 @@ import type { NodeExecutor } from "../types";
 
 import { geminiExecutor } from "../components/gemini/executor";
 import { openaiExecutor } from "../components/openai/executor";
+import { anthropicExecutor } from "../components/anthropic/executor";
 
 export const executeRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.INITIAL]: manualTriggerExecutor,
@@ -20,6 +21,7 @@ export const executeRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
   [NodeType.GEMINI]: geminiExecutor,
   [NodeType.OPENAI]: openaiExecutor,
+  [NodeType.ANTHROPIC]: anthropicExecutor,
 };
 
 export function getExecutor(type: NodeType): NodeExecutor {
