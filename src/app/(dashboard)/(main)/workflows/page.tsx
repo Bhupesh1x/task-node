@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { SearchParams } from "nuqs/server";
+import type { SearchParams } from "nuqs/server";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { HydrateClient } from "@/trpc/server";
