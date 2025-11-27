@@ -1,12 +1,15 @@
 "use client";
 
-import { KeyIcon } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 
+import {
+  CredentialType,
+  type Credential as CredentialDataType,
+} from "@/generated/prisma";
 import { PAGINATION } from "@/configs/constants";
 import { useEntitySearch } from "@/hooks/use-entity-search";
-import type { Credential as CredentialDataType } from "@/generated/prisma";
 
 import {
   EmptyView,
@@ -25,6 +28,12 @@ import {
   useSuspenseCredentials,
 } from "../hooks/useCredentials";
 import { useCredentialsParams } from "../hooks/useCredentialsParams";
+
+const CredentialLogoMap: Record<CredentialType, string> = {
+  [CredentialType.OPENAI]: "/openai.svg",
+  [CredentialType.GEMINI]: "/gemini.svg",
+  [CredentialType.ANTHROPIC]: "/anthropic.svg",
+};
 
 export function CredentialsView() {
   const credentials = useSuspenseCredentials();
@@ -78,7 +87,7 @@ export function CredentialsHeader() {
     <EntityHeader
       title="Credentials"
       description="Create and manage your credentials"
-      newBtnText="New credentials"
+      newBtnText="New credential"
       newBtnHref="/credentials/new"
     />
   );
@@ -140,6 +149,8 @@ export function CredentialItem({ data }: { data: CredentialDataType }) {
     removeCredential.mutate({ id: data.id });
   }
 
+  const logo = CredentialLogoMap[data?.type];
+
   return (
     <EntityItem
       title={data.name}
@@ -151,7 +162,7 @@ export function CredentialItem({ data }: { data: CredentialDataType }) {
         </>
       }
       href={`/credentials/${data.id}`}
-      image={<KeyIcon className="text-muted-foreground" />}
+      image={<Image src={logo} alt={data?.type} height={18} width={18} />}
       onRemove={onRemove}
       isRemoving={removeCredential?.isPending}
     />
