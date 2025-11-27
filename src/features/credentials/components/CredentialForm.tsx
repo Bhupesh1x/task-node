@@ -220,7 +220,9 @@ export function CredentialForm({ initialData }: Props) {
                   <Link href="/credentials">Cancel</Link>
                 </Button>
                 {isSubmitting ? (
-                  <LoadingButton className="w-[73px]" />
+                  <LoadingButton
+                    className={isEdit ? "w-[61.38px]" : "w-[73px]"}
+                  />
                 ) : (
                   <Button type="submit">{isEdit ? "Save" : "Create"}</Button>
                 )}
