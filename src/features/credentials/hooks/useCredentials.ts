@@ -53,7 +53,7 @@ export function useRemoveCredential() {
           trpc.credentials.getMany.queryOptions({})
         );
         queryClient.invalidateQueries(
-          trpc.credentials.getOne.queryOptions({ id: data.id })
+          trpc.credentials.getByType.queryOptions({ type: data.type })
         );
       },
       onError: () => {
@@ -81,6 +81,9 @@ export function useUpdateCredential() {
         toast.success(`Credential "${data.name}" saved`);
         queryClient.invalidateQueries(
           trpc.credentials.getOne.queryOptions({ id: data.id })
+        );
+        queryClient.invalidateQueries(
+          trpc.credentials.getByType.queryOptions({ type: data.type })
         );
       },
       onError: () => {

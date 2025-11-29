@@ -1,5 +1,8 @@
 import Image from "next/image";
+
+import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { CredentialType } from "@/generated/prisma";
@@ -49,6 +52,9 @@ export function GeminiDialog({
   onSubmit,
   onOpenChange,
 }: Props) {
+  const router = useRouter();
+  const params = useParams<{ workflowId: string }>();
+
   const { data: geminiCredentials, isLoading: isGeminiCredentialsLoading } =
     useCredentialByType(CredentialType.GEMINI);
 
@@ -62,7 +68,36 @@ export function GeminiDialog({
     },
   });
 
+  const handleCredentialChange = (
+    value: string,
+    onChange: (value: string) => void
+  ) => {
+    if (value === "__add_new__") {
+      router.push(
+        `/credentials/new?redirectsTo=/workflows/${params?.workflowId}`
+      );
+      return;
+    }
+
+    onChange(value);
+  };
+
   function handleSubmit(values: formType) {
+    const isCredentialExist = geminiCredentials?.some(
+      (credential) => credential.id === values?.credentialId
+    );
+
+    if (!isCredentialExist) {
+      form.setValue("credentialId", "");
+
+      form.setError("credentialId", {
+        message: "Gemini credential is required",
+        type: "required",
+      });
+
+      return;
+    }
+
     onSubmit(values);
     onOpenChange(false);
   }
@@ -111,11 +146,11 @@ export function GeminiDialog({
                   <FormLabel>Gemini Credential</FormLabel>
 
                   <Select
-                    disabled={
-                      isGeminiCredentialsLoading || !geminiCredentials?.length
-                    }
+                    disabled={isGeminiCredentialsLoading}
                     value={field.value}
-                    onValueChange={field.onChange}
+                    onValueChange={(value) =>
+                      handleCredentialChange(value, field.onChange)
+                    }
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
@@ -136,6 +171,12 @@ export function GeminiDialog({
                           </div>
                         </SelectItem>
                       ))}
+                      <SelectItem value="__add_new__">
+                        <div className="flex items-center gap-2">
+                          <PlusIcon className="h-4 w-4" />
+                          <p>Add credential</p>
+                        </div>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

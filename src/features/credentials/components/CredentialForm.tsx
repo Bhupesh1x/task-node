@@ -4,7 +4,7 @@ import z from "zod";
 import Link from "next/link";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { CredentialType } from "@/generated/prisma";
@@ -79,6 +79,7 @@ const credentialsTypeOptions = [
 
 export function CredentialForm({ initialData }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { modal, handleError } = useUpgradeModal();
 
@@ -108,8 +109,13 @@ export function CredentialForm({ initialData }: Props) {
           ...values,
         },
         {
-          onSuccess: (data) => {
-            router.push(`/credentials/${data.id}`);
+          onSuccess: () => {
+            const redirectsTo = searchParams.get("redirectsTo");
+            if (redirectsTo) {
+              router.push(redirectsTo);
+            } else {
+              router.push("/credentials");
+            }
           },
           onError: (error) => {
             handleError(error);

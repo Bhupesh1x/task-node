@@ -17,7 +17,7 @@ function AnthropicNodeComponent(props: NodeProps<AnthropicNodeType>) {
   const { setNodes } = useReactFlow();
 
   const description = nodeData?.userPrompt
-    ? `gpt-4: ${nodeData?.userPrompt?.slice(0, 50)}...`
+    ? `claude-3-5-sonnet-latest: ${nodeData?.userPrompt?.slice(0, 50)}...`
     : "Not configured";
 
   const { status } = useNodeStatus({
