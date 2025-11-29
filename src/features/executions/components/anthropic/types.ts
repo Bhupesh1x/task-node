@@ -7,6 +7,7 @@ export interface AnthropicNodeData {
   variableName?: string;
   systemPrompt?: string;
   userPrompt?: string;
+  credentialsId?: string;
   [key: string]: unknown;
 }
 
