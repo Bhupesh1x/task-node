@@ -7,6 +7,7 @@ export interface GeminiNodeData {
   variableName?: string;
   systemPrompt?: string;
   userPrompt?: string;
+  credentialId?: string;
   [key: string]: unknown;
 }
 

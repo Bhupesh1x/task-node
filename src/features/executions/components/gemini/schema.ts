@@ -9,6 +9,7 @@ export const formSchema = z.object({
       message:
         "Variable name must start with a letter or underscore and can contain only letters, numbers and underscore",
     }),
+  credentialId: z.string().trim().min(1, "Gemini credential is required"),
   systemPrompt: z.string().optional(),
   userPrompt: z.string().trim().min(1, "User Prompt is required"),
 });
