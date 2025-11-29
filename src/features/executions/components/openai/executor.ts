@@ -29,6 +29,7 @@ export async function openaiExecutor({
   context,
   step,
   publish,
+  userId,
 }: Parameters<NodeExecutor<OpenAiData>>[0]) {
   await publish(
     openaiChannels().status({
@@ -72,7 +73,7 @@ export async function openaiExecutor({
 
   const credential = await step.run("get-credential", async () => {
     return await db.credential.findUnique({
-      where: { id: data?.credentialId },
+      where: { id: data?.credentialId, userId },
     });
   });
 

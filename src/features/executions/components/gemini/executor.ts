@@ -29,6 +29,7 @@ export async function geminiExecutor({
   context,
   step,
   publish,
+  userId,
 }: Parameters<NodeExecutor<GeminiData>>[0]) {
   await publish(
     geminiChannels().status({
@@ -72,7 +73,7 @@ export async function geminiExecutor({
 
   const credential = await step.run("get-credential", async () => {
     return await db.credential.findUnique({
-      where: { id: data?.credentialId },
+      where: { id: data?.credentialId, userId },
     });
   });
 

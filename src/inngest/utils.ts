@@ -58,6 +58,7 @@ export function topologicalSort(
 
 export function sendWorkflowExecution(data: {
   workflowId: string;
+  userId?: string;
   [key: string]: unknown;
 }) {
   return inngest.send({

@@ -29,6 +29,7 @@ export async function anthropicExecutor({
   context,
   step,
   publish,
+  userId,
 }: Parameters<NodeExecutor<AnthropicData>>[0]) {
   await publish(
     anthropicChannels().status({
@@ -74,7 +75,7 @@ export async function anthropicExecutor({
 
   const credential = await step.run("get-credential", async () => {
     return await db.credential.findUnique({
-      where: { id: data?.credentialId },
+      where: { id: data?.credentialId, userId },
     });
   });
 

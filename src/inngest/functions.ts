@@ -32,6 +32,7 @@ export const executeWorkflow = inngest.createFunction(
   },
   async ({ event, step, publish }) => {
     const workflowId = event?.data?.workflowId;
+    let userId = null;
 
     if (!workflowId) {
       throw new NonRetriableError("Workflow id is required");
@@ -49,6 +50,23 @@ export const executeWorkflow = inngest.createFunction(
       return topologicalSort(workflow.nodes, workflow.connections);
     });
 
+    const workflowUserId = await step.run("find-user-id", async () => {
+      const workflow = await db.workflow.findUniqueOrThrow({
+        where: { id: workflowId },
+        select: {
+          userId: true,
+        },
+      });
+
+      return workflow?.userId;
+    });
+
+    if (event?.data?.userId) {
+      userId = event?.data?.userId;
+    } else {
+      userId = workflowUserId;
+    }
+
     let context = event?.data?.initialData || {};
 
     for (const node of sortedNodes) {
@@ -60,6 +78,7 @@ export const executeWorkflow = inngest.createFunction(
         context,
         step,
         publish,
+        userId,
       });
     }
 
