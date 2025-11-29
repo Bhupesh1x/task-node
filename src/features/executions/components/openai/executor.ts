@@ -4,6 +4,8 @@ import { generateText } from "ai";
 import { NonRetriableError } from "inngest";
 import { createOpenAI } from "@ai-sdk/openai";
 
+import { db } from "@/lib/db";
+
 import { openaiChannels } from "@/inngest/channels/openai";
 
 import type { NodeExecutor } from "../../types";
@@ -12,6 +14,7 @@ type OpenAiData = {
   variableName?: string;
   systemPrompt?: string;
   userPrompt?: string;
+  credentialId?: string;
 };
 
 Handlebars.registerHelper("json", (context) => {
@@ -56,13 +59,41 @@ export async function openaiExecutor({
     throw new NonRetriableError("OPENAI_ERROR: User prompt is required");
   }
 
+  if (!data?.credentialId) {
+    await publish(
+      openaiChannels().status({
+        nodeId,
+        status: "error",
+      })
+    );
+
+    throw new NonRetriableError("OPENAI_ERROR: Open Ai credential is required");
+  }
+
+  const credential = await step.run("get-credential", async () => {
+    return await db.credential.findUnique({
+      where: { id: data?.credentialId },
+    });
+  });
+
+  if (!credential?.id) {
+    await publish(
+      openaiChannels().status({
+        nodeId,
+        status: "error",
+      })
+    );
+
+    throw new NonRetriableError("OPENAI_ERROR: OpenAI credential not found");
+  }
+
   const systemPrompt = data?.systemPrompt
     ? Handlebars.compile(data?.systemPrompt)(context)
     : "You are an helpful assistant";
   const userPrompt = Handlebars.compile(data?.userPrompt)(context);
 
   const openAi = createOpenAI({
-    apiKey: process.env.OPENAI_API_KEY!,
+    apiKey: credential?.value,
   });
 
   try {

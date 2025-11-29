@@ -1,6 +1,20 @@
+import Image from "next/image";
+import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useParams, useRouter } from "next/navigation";
 
+import { CredentialType } from "@/generated/prisma";
+
+import { useCredentialByType } from "@/features/credentials/hooks/useCredentials";
+
+import {
+  Select,
+  SelectItem,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -37,6 +51,12 @@ export function OpenAiDialog({
   onSubmit,
   onOpenChange,
 }: Props) {
+  const router = useRouter();
+  const params = useParams<{ workflowId: string }>();
+
+  const { data: openaiCredentials, isLoading: isOpenAICredentialsLoading } =
+    useCredentialByType(CredentialType.OPENAI);
+
   const form = useForm<formType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,7 +66,36 @@ export function OpenAiDialog({
     },
   });
 
+  const handleCredentialChange = (
+    value: string,
+    onChange: (value: string) => void
+  ) => {
+    if (value === "__add_new__") {
+      router.push(
+        `/credentials/new?redirectsTo=/workflows/${params?.workflowId}`
+      );
+      return;
+    }
+
+    onChange(value);
+  };
+
   function handleSubmit(values: formType) {
+    const isCredentialExist = openaiCredentials?.some(
+      (credential) => credential.id === values?.credentialId
+    );
+
+    if (!isCredentialExist) {
+      form.setValue("credentialId", "");
+
+      form.setError("credentialId", {
+        message: "OpenAI credential is required",
+        type: "required",
+      });
+
+      return;
+    }
+
     onSubmit(values);
     onOpenChange(false);
   }
@@ -82,6 +131,52 @@ export function OpenAiDialog({
                     Use this name to reference the result in other nodes:{" "}
                     {`{{${watchVariableName}.text}}`}
                   </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="credentialId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>OpenAI Credential</FormLabel>
+
+                  <Select
+                    disabled={isOpenAICredentialsLoading}
+                    value={field.value}
+                    onValueChange={(value) =>
+                      handleCredentialChange(value, field.onChange)
+                    }
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a credential" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {openaiCredentials?.map((credential) => (
+                        <SelectItem key={credential.id} value={credential.id}>
+                          <div className="flex items-center gap-2">
+                            <Image
+                              src="/openai.svg"
+                              alt="OpenAI"
+                              height={16}
+                              width={16}
+                            />
+                            <p>{credential?.name}</p>
+                          </div>
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="__add_new__">
+                        <div className="flex items-center gap-2">
+                          <PlusIcon className="h-4 w-4" />
+                          <p>Add credential</p>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
