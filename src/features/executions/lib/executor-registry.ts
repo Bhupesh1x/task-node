@@ -11,17 +11,19 @@ import type { NodeExecutor } from "../types";
 
 import { geminiExecutor } from "../components/gemini/executor";
 import { openaiExecutor } from "../components/openai/executor";
+import { discordExecutor } from "../components/discord/executor";
 import { anthropicExecutor } from "../components/anthropic/executor";
 
 export const executeRegistry: Record<NodeType, NodeExecutor> = {
+  [NodeType.GEMINI]: geminiExecutor,
+  [NodeType.OPENAI]: openaiExecutor,
+  [NodeType.DISCORD]: discordExecutor,
+  [NodeType.ANTHROPIC]: anthropicExecutor,
   [NodeType.INITIAL]: manualTriggerExecutor,
   [NodeType.HTTP_REQUEST]: httpRequestExecutor,
   [NodeType.MANUAL_TRIGGER]: manualTriggerExecutor,
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GOOGLE_FORM_TRIGGER]: googleFormTriggerExecutor,
-  [NodeType.GEMINI]: geminiExecutor,
-  [NodeType.OPENAI]: openaiExecutor,
-  [NodeType.ANTHROPIC]: anthropicExecutor,
 };
 
 export function getExecutor(type: NodeType): NodeExecutor {
