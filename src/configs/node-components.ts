@@ -4,6 +4,7 @@ import { NodeType } from "@/generated/prisma";
 
 import { OpenAiNode } from "@/features/executions/components/openai/Node";
 import { GeminiNode } from "@/features/executions/components/gemini/Node";
+import { DiscordNode } from "@/features/executions/components/discord/Node";
 import { StripeTriggerNode } from "@/features/triggers/stripe-trigger/Node";
 import { ManualTriggerNode } from "@/features/triggers/manual-triggers/Node";
 import { AnthropicNode } from "@/features/executions/components/anthropic/Node";
@@ -16,6 +17,7 @@ export const nodeComponents = {
   [NodeType.GEMINI]: GeminiNode,
   [NodeType.OPENAI]: OpenAiNode,
   [NodeType.INITIAL]: InitialNode,
+  [NodeType.DISCORD]: DiscordNode,
   [NodeType.ANTHROPIC]: AnthropicNode,
   [NodeType.HTTP_REQUEST]: HttpRequestNode,
   [NodeType.STRIPE_TRIGGER]: StripeTriggerNode,
