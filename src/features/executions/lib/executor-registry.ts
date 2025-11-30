@@ -9,12 +9,14 @@ import { googleFormTriggerExecutor } from "@/features/triggers/google-form-trigg
 
 import type { NodeExecutor } from "../types";
 
+import { slackExecutor } from "../components/slack/executor";
 import { geminiExecutor } from "../components/gemini/executor";
 import { openaiExecutor } from "../components/openai/executor";
 import { discordExecutor } from "../components/discord/executor";
 import { anthropicExecutor } from "../components/anthropic/executor";
 
 export const executeRegistry: Record<NodeType, NodeExecutor> = {
+  [NodeType.SLACK]: slackExecutor,
   [NodeType.GEMINI]: geminiExecutor,
   [NodeType.OPENAI]: openaiExecutor,
   [NodeType.DISCORD]: discordExecutor,
