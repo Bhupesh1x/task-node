@@ -11,8 +11,8 @@ import {
   MoreVerticalIcon,
   AlertTriangleIcon,
 } from "lucide-react";
-import { ChangeEvent } from "react";
-import { VariantProps } from "class-variance-authority";
+import type { ChangeEvent } from "react";
+import type { VariantProps } from "class-variance-authority";
 
 import {
   DropdownMenu,
@@ -22,11 +22,11 @@ import {
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
 import { Card, CardContent } from "./ui/card";
-import { Button, buttonVariants } from "./ui/button";
+import { Button, type buttonVariants } from "./ui/button";
 
 type Props = {
   title: string;
-  newBtnText: string;
+  newBtnText?: string;
   disabled?: boolean;
   description?: string;
   isCreating?: boolean;
