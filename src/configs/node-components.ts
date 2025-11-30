@@ -2,6 +2,7 @@ import type { NodeTypes } from "@xyflow/react";
 
 import { NodeType } from "@/generated/prisma";
 
+import { SlackNode } from "@/features/executions/components/slack/Node";
 import { OpenAiNode } from "@/features/executions/components/openai/Node";
 import { GeminiNode } from "@/features/executions/components/gemini/Node";
 import { DiscordNode } from "@/features/executions/components/discord/Node";
@@ -14,6 +15,7 @@ import { GoogleFormTriggerNode } from "@/features/triggers/google-form-trigger/N
 import { InitialNode } from "@/components/nodes/InitialNode";
 
 export const nodeComponents = {
+  [NodeType.SLACK]: SlackNode,
   [NodeType.GEMINI]: GeminiNode,
   [NodeType.OPENAI]: OpenAiNode,
   [NodeType.INITIAL]: InitialNode,
