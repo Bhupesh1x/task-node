@@ -1,7 +1,7 @@
 import { NonRetriableError } from "inngest";
 
 import { db } from "@/lib/db";
-import type { NodeType } from "@/generated/prisma";
+import { ExecutionStatus, type NodeType } from "@/generated/prisma";
 
 import { getExecutor } from "@/features/executions/lib/executor-registry";
 
@@ -19,7 +19,20 @@ import { manualTriggerChannels } from "./channels/manual-trigger";
 import { googleFormTriggerChannels } from "./channels/google-form-trigger";
 
 export const executeWorkflow = inngest.createFunction(
-  { id: "execute-workflow", retries: 0 },
+  {
+    id: "execute-workflow",
+    retries: 0,
+    onFailure: ({ event }) => {
+      return db.executions.update({
+        where: { inngestEventId: event.data?.event?.id },
+        data: {
+          status: ExecutionStatus.FAILED,
+          error: event?.data?.error?.message,
+          errorStack: event?.data?.error?.stack,
+        },
+      });
+    },
+  },
   {
     event: "workflows/execute.workflow",
     channels: [
@@ -35,12 +48,26 @@ export const executeWorkflow = inngest.createFunction(
     ],
   },
   async ({ event, step, publish }) => {
+    const inngestEventId = event?.id;
     const workflowId = event?.data?.workflowId;
     let userId = null;
 
     if (!workflowId) {
       throw new NonRetriableError("Workflow id is required");
     }
+
+    if (!inngestEventId) {
+      throw new NonRetriableError("Inngest event id is required");
+    }
+
+    await step.run("create-execution", () => {
+      return db.executions.create({
+        data: {
+          inngestEventId,
+          workflowId,
+        },
+      });
+    });
 
     const sortedNodes = await step.run("prepare-workflow", async () => {
       const workflow = await db.workflow.findUniqueOrThrow({
@@ -85,6 +112,17 @@ export const executeWorkflow = inngest.createFunction(
         userId,
       });
     }
+
+    await step.run("update-execution", () => {
+      return db.executions.update({
+        where: { inngestEventId, workflowId },
+        data: {
+          completedAt: new Date(),
+          status: ExecutionStatus.SUCCESS,
+          output: context,
+        },
+      });
+    });
 
     return {
       workflowId,
