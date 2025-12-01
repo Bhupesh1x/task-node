@@ -112,9 +112,17 @@ export function ExecutionItem({
 
   const StatusIcon = executionIconMap[data?.status];
 
+  const formattedStatus = useMemo(() => {
+    return (
+      data?.status?.charAt(0) + data?.status?.slice(1)?.toLowerCase() ||
+      data?.status ||
+      ""
+    );
+  }, [data?.status]);
+
   return (
     <EntityItem
-      title={data.status}
+      title={formattedStatus}
       subtitle={
         <>
           {data?.workflow?.name} &bull; Started{" "}
