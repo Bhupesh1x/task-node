@@ -198,4 +198,6 @@ model Executions {
 
   startedAt   DateTime  @default(now())
   completedAt DateTime?
+
+  @@index([workflowId, startedAt(sort: Desc)])
 }
