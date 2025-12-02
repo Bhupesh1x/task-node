@@ -14,9 +14,17 @@ export const executionsRouters = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const execution = await db.executions.findFirstOrThrow({
         where: {
-          inngestEventId: input.id,
+          id: input.id,
           workflow: {
             userId: ctx.auth.user.id,
+          },
+        },
+        include: {
+          workflow: {
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
       });
