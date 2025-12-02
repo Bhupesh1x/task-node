@@ -1,13 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
+import {
+  Loader2Icon,
+  XCircleIcon,
+  CheckCircle2Icon,
+  RefreshCcwDotIcon,
+} from "lucide-react";
+import { useMemo, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { Loader2Icon, XCircleIcon, CheckCircle2Icon } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   ExecutionStatus,
   type Executions as ExecutionType,
 } from "@/generated/prisma";
+import { useTRPC } from "@/trpc/client";
 
 import {
   EmptyView,
@@ -19,6 +26,7 @@ import {
   EntityContainer,
   EntityPagination,
 } from "@/components/EntityComponents";
+import { Button } from "@/components/ui/button";
 
 import { useSuspenseExecutions } from "../hooks/useExecutions";
 import { useExecutionsParams } from "../hooks/useExecutionsParams";
@@ -58,11 +66,44 @@ export function ExecutionsView() {
   );
 }
 
+function RefetchButton() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
+  const [isPending, setIsPending] = useState(false);
+
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  function onRefetch() {
+    setIsPending(true);
+    queryClient.invalidateQueries(trpc.executions.getMany.queryOptions({}));
+
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+
+    timeout = setTimeout(() => {
+      setIsPending(false);
+    }, 4 * 1000);
+  }
+
+  return (
+    <Button variant="destructive" disabled={isPending} onClick={onRefetch}>
+      {isPending ? (
+        <RefreshCcwDotIcon className="size-4 animate-spin" />
+      ) : (
+        <RefreshCcwDotIcon className="size-4" />
+      )}
+      Refresh
+    </Button>
+  );
+}
+
 export function ExecutionsHeader() {
   return (
     <EntityHeader
       title="Executions"
       description="View your workflow executions history"
+      actionBtn={<RefetchButton />}
     />
   );
 }

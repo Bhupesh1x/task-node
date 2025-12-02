@@ -30,6 +30,7 @@ type Props = {
   disabled?: boolean;
   description?: string;
   isCreating?: boolean;
+  actionBtn?: React.ReactNode;
 } & (
   | { newBtnHref: string; onNew?: never }
   | { onNew?: never; newBtnHref?: never }
@@ -43,6 +44,7 @@ export function EntityHeader({
   disabled,
   isCreating,
   newBtnHref,
+  actionBtn,
   onNew,
 }: Props) {
   return (
@@ -55,6 +57,8 @@ export function EntityHeader({
           </p>
         )}
       </div>
+
+      {!!actionBtn ? actionBtn : null}
 
       {onNew && !newBtnHref && (
         <Button
