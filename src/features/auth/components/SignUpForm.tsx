@@ -4,6 +4,7 @@ import { z } from "zod";
 import Link from "next/link";
 import Image from "next/image";
 import { toast } from "sonner";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +29,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+type SocialProviders = "github" | "google";
+
 const formSchema = z
   .object({
     email: z.email().min(1, "Email is required"),
@@ -42,6 +45,8 @@ const formSchema = z
 export function SignUpForm() {
   const router = useRouter();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,6 +55,28 @@ export function SignUpForm() {
       confirmPassword: "",
     },
   });
+
+  async function onSignInWithSocialProvider(provider: SocialProviders) {
+    setIsLoading(true);
+
+    await authClient.signIn.social(
+      {
+        provider,
+      },
+      {
+        onSuccess: () => {
+          setIsLoading(false);
+        },
+        onError: (ctx) => {
+          toast.error(
+            ctx?.error?.message ||
+              "Failed to sign in. Please try again after sometime"
+          );
+          setIsLoading(false);
+        },
+      }
+    );
+  }
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     await authClient.signUp.email(
@@ -73,7 +100,7 @@ export function SignUpForm() {
     );
   }
 
-  const isPending = form.formState?.isSubmitting;
+  const isPending = form.formState?.isSubmitting || isLoading;
 
   return (
     <Card className="w-md px-4">
@@ -89,6 +116,8 @@ export function SignUpForm() {
             className="w-full text-[#0000009E] text-sm"
             variant="outline"
             size="sm"
+            disabled={isPending}
+            onClick={() => onSignInWithSocialProvider("google")}
           >
             <Image src="/google.svg" alt="Google icon" height={16} width={16} />
             <span className="ml-1">Continue with Google</span>
@@ -97,6 +126,8 @@ export function SignUpForm() {
             className="w-full text-[#0000009E] text-sm"
             variant="outline"
             size="sm"
+            disabled={isPending}
+            onClick={() => onSignInWithSocialProvider("github")}
           >
             <Image src="/github.svg" alt="Github icon" height={16} width={16} />
             <span className="ml-1">Continue with Github</span>
