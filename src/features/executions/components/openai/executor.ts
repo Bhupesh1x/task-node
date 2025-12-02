@@ -5,6 +5,7 @@ import { NonRetriableError } from "inngest";
 import { createOpenAI } from "@ai-sdk/openai";
 
 import { db } from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 
 import { openaiChannels } from "@/inngest/channels/openai";
 
@@ -94,7 +95,7 @@ export async function openaiExecutor({
   const userPrompt = Handlebars.compile(data?.userPrompt)(context);
 
   const openAi = createOpenAI({
-    apiKey: credential?.value,
+    apiKey: decrypt(credential?.value),
   });
 
   try {

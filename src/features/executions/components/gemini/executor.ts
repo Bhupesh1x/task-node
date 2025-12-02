@@ -5,6 +5,7 @@ import { NonRetriableError } from "inngest";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 
 import { db } from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 
 import { geminiChannels } from "@/inngest/channels/gemini";
 
@@ -94,7 +95,7 @@ export async function geminiExecutor({
   const userPrompt = Handlebars.compile(data?.userPrompt)(context);
 
   const google = createGoogleGenerativeAI({
-    apiKey: credential?.value,
+    apiKey: decrypt(credential?.value),
   });
 
   try {

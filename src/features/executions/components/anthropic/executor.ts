@@ -5,6 +5,7 @@ import { NonRetriableError } from "inngest";
 import { createAnthropic } from "@ai-sdk/anthropic";
 
 import { db } from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 
 import { anthropicChannels } from "@/inngest/channels/anthropic";
 
@@ -98,7 +99,7 @@ export async function anthropicExecutor({
   const userPrompt = Handlebars.compile(data?.userPrompt)(context);
 
   const anthropic = createAnthropic({
-    apiKey: credential?.value,
+    apiKey: decrypt(credential?.value),
   });
 
   try {
