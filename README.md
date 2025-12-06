@@ -45,4 +45,48 @@ Users can:
 
 ## Screenshots
 
+> **Workflows Listings**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/task-node-web.vercel.app_workflows_p3lxc2.png" alt="Workflows Listings" />
+<br />
+
+> **Workflow Node Selector**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_workflows_1_wm25mf.png" alt="Workflow Node Selector" />
+<br />
+
+> **Workflow Node Configuration Example**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_workflows_2_hvxamm.png" alt="Workflow Node Configuration Example" />
+<br />
+
+> **Workflow Execution state**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/task-node-web.vercel.app_workflows_3_x1fayb.png" alt="Workflow Execution state" />
+<br />
+
+> **Workflow Success Execution state**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_workflows_4_ri35ek.png" alt="Workflow Success Execution state" />
+<br />
+
+> **Workflow Failed Execution state**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_p2tm9d.png" alt="Workflow Failed Execution state" />
+<br />
+
+> **Credentials**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_1_luwz1x.png" alt="Credentials" />
+<br />
+
+> **Executions History**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/task-node-web.vercel.app_workflows_5_lk6ouz.png" alt="Executions History" />
+<br />
+
+> **Success Executions State**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_2_otzaho.png" alt="Success Executions State" />
+<br />
+
+> **Failed Executions State**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035742/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_3_hhfdgq.png" alt="Failed Executions State" />
+<br />
+
+> **Billings Details Page**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/sandbox.polar.sh_task-node-development-bh_portal_overview_customer_session_token_polar_cst_y2FbO3s7gDlPEx99girB8LpYkpBdvGUJkV2AU3pupJy_email_test_40gmail.com_hlcsxu.png" alt="Billings Details Page" />
+<br />
+
 
