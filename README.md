@@ -1,5 +1,10 @@
 # Task Node
 
+## Test credentials
+
+- email: guest@gmail.com
+- password: GuestPass12345
+  
 ## Description
 **Task Node** is a **workflow automation platform** built from scratch. It allows users to visually create, automate, and execute complex workflows using a drag-and-drop canvas powered by **React Flow**.  
 
