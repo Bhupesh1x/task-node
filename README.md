@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Task Node
 
-## Getting Started
+## Description
+**Task Node** is a **workflow automation platform** built from scratch. It allows users to visually create, automate, and execute complex workflows using a drag-and-drop canvas powered by **React Flow**.  
 
-First, run the development server:
+With support for multiple triggers, AI providers, background job execution, messaging integrations, and full SaaS business features, Task Node delivers everything required to build and run an automation platform similar to Zapier, Make, or n8n.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Users can:
+- Build workflows visually using a node-based canvas.
+- Choose from multiple triggers (Webhook, Google Form, Stripe events, or manual execution).
+- Automate actions using AI models like OpenAI, Claude, and Gemini.
+- Send automated messages through Slack or Discord.
+- Run long-running or scheduled tasks using Inngest.
+- Manage authentication and subscriptions.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🔧 Core Capabilities
+- 🔄 **Visual Workflow Builder** with drag-and-drop nodes  
+- 🎯 **Trigger Nodes**  
+  - Webhook trigger  
+  - Google Form trigger  
+  - Stripe trigger  
+  - Manual trigger  
+- 🤖 **AI Nodes for Automation**  
+  - Supports OpenAI, Claude, and Gemini  
+- 💬 **Messaging Nodes**  
+  - Slack node  
+  - Discord node  
+- 🌐 **HTTP Request Node** for API calls  
+- 🪲 **And many more nodes to be added in future**
+- ⚡ **Background Job Execution** using Inngest  
 
-## Learn More
+### 🧩 Platform Infrastructure
+- 💳 **Polar Payments & Subscriptions**  
+- 🔐 **Authentication** powered by Better Auth  
+- 🗄️ **Prisma ORM** + **Neon Postgres**  
+- 🔒 **Type Safety** with TypeScript + tRPC  
+- 🎨 **React Flow Canvas** for node-based editing  
+- 🌐 **Next.js 15 App Router**  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Screenshots
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **Workflows Listings**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/task-node-web.vercel.app_workflows_p3lxc2.png" alt="Workflows Listings" />
+<br />
 
-## Deploy on Vercel
+> **Workflow Node Selector**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_workflows_1_wm25mf.png" alt="Workflow Node Selector" />
+<br />
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> **Workflow Node Configuration Example**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_workflows_2_hvxamm.png" alt="Workflow Node Configuration Example" />
+<br />
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> **Workflow Execution state**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/task-node-web.vercel.app_workflows_3_x1fayb.png" alt="Workflow Execution state" />
+<br />
+
+> **Workflow Success Execution state**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_workflows_4_ri35ek.png" alt="Workflow Success Execution state" />
+<br />
+
+> **Workflow Failed Execution state**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_p2tm9d.png" alt="Workflow Failed Execution state" />
+<br />
+
+> **Credentials**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_1_luwz1x.png" alt="Credentials" />
+<br />
+
+> **Executions History**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/task-node-web.vercel.app_workflows_5_lk6ouz.png" alt="Executions History" />
+<br />
+
+> **Success Executions State**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035741/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_2_otzaho.png" alt="Success Executions State" />
+<br />
+
+> **Failed Executions State**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035742/task-node-web.vercel.app_executions_cmiubqwl5000bkv04i5zuq8t1_3_hhfdgq.png" alt="Failed Executions State" />
+<br />
+
+> **Billings Details Page**
+<img src="https://res.cloudinary.com/doqvdfvrj/image/upload/v1765035740/sandbox.polar.sh_task-node-development-bh_portal_overview_customer_session_token_polar_cst_y2FbO3s7gDlPEx99girB8LpYkpBdvGUJkV2AU3pupJy_email_test_40gmail.com_hlcsxu.png" alt="Billings Details Page" />
+<br />
+
+
